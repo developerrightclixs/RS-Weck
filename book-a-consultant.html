@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Consultant | R. S. Weck &amp; Associates</title>
+  <meta name="description" content="Book a confidential consultation with R. S. Weck &amp; Associates, MAI-designated commercial appraisal for the Greater Sacramento region.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Carlito&family=DM+Sans:opsz,wght@9..40,400&family=Marcellus&family=Poppins:wght@300;400;500;600&family=Rethink+Sans:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="page-contact page-booking">
+
+  <!-- ===== Header ===== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="header-logo" aria-label="R. S. Weck &amp; Associates home">
+        <span class="logo-crop"><img src="assets/images/rs-logo.png" alt="R. S. Weck &amp; Associates"></span>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="about.html">About us</a>
+        <a href="service.html">Service</a>
+        <a href="faq.html">Faq</a>
+        <a href="contact.html">Contact us</a>
+      </nav>
+
+      <a href="book-a-consultant.html" class="ai-badge ai-badge--header" aria-label="Book a consultation" aria-current="page">
+        <img class="ai-badge__shape" src="assets/images/badge-header.svg" alt="">
+        <span class="ai-badge__mark"><img src="assets/images/robchange.png" alt=""></span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===== Page banner ===== -->
+    <section class="hero hero--page">
+      <div class="hero-bg" aria-hidden="true">
+        <img src="assets/images/hero-bg.jpg" alt="">
+      </div>
+      <div class="container hero-content">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-aos="fade-up"><a href="index.html">Home</a><span aria-hidden="true">/</span><span aria-current="page">Book a Consultant</span></nav>
+        <h1 data-aos="fade-up" data-aos-delay="100">Book a Consultant</h1>
+        <p data-aos="fade-up" data-aos-delay="200">Reserve a confidential, one-on-one discussion with Robert Weck about your commercial appraisal, litigation, or estate valuation needs.</p>
+      </div>
+    </section>
+
+    <!-- ===== Booking ===== -->
+    <section class="contact-section" id="booking">
+      <div class="container contact-layout">
+        <div class="contact-card booking" data-aos="fade-up">
+          <div class="contact-card__head">
+            <h2>Book a Consultation</h2>
+            <p>Reserve a time for a confidential discussion about your commercial appraisal needs.</p>
+          </div>
+
+          <ol class="booking-steps" aria-label="Booking progress">
+            <li class="is-active" data-step-pill="1"><span>1</span>Your details</li>
+            <li data-step-pill="2"><span>2</span>Date &amp; time</li>
+            <li data-step-pill="3"><span>3</span>Confirm</li>
+          </ol>
+
+          <form class="contact-form booking-form" id="bookingForm" novalidate>
+
+            <!-- Step 1 -->
+            <div class="booking-panel is-active" data-step="1">
+              <div class="field">
+                <label for="bk-name">Full Name</label>
+                <input type="text" id="bk-name" name="full_name" placeholder="Thomas Benton" autocomplete="name" required>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label for="bk-email">Email Address</label>
+                  <input type="email" id="bk-email" name="email" placeholder="t.benton@example.com" autocomplete="email" required>
+                </div>
+                <div class="field">
+                  <label for="bk-phone">Phone Number</label>
+                  <input type="tel" id="bk-phone" name="phone" placeholder="(916) 555-0140" autocomplete="tel" required>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label for="bk-company">Firm or Company <span class="field-opt">(optional)</span></label>
+                  <input type="text" id="bk-company" name="company" placeholder="Benton &amp; Associates LLP" autocomplete="organization">
+                </div>
+                <div class="field">
+                  <label for="bk-format">Consultation Format</label>
+                  <select id="bk-format" name="meeting_type">
+                    <option>Phone call</option>
+                    <option>Video call</option>
+                    <option>In-person meeting</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="bk-service">Service Type</label>
+                <select id="bk-service" name="service_type" required>
+                  <option>Estate Planning Appraisals</option>
+                  <option>Litigation Support &amp; Expert Witness</option>
+                  <option>Lender &amp; Bank Appraisals</option>
+                  <option>Investment Property Analysis</option>
+                  <option>Tax Appeal &amp; Assessment Review</option>
+                  <option>Partnership &amp; Corporate Valuations</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="bk-address">Property Address <span class="field-opt">(optional)</span></label>
+                <input type="text" id="bk-address" name="property_address" placeholder="Street, city, county">
+              </div>
+              <div class="field">
+                <label for="bk-message">Brief Description of Appraisal Needs</label>
+                <textarea id="bk-message" name="message" placeholder="Provide property details, valuation purpose, or litigation context..."></textarea>
+              </div>
+
+              <p class="booking-error" data-error="1" role="alert" hidden></p>
+              <div class="booking-actions">
+                <button type="button" class="btn-dark" data-next="2">Choose a time</button>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="booking-panel" data-step="2">
+              <div class="scheduler">
+                <div class="scheduler__box">
+                  <div class="cal-nav">
+                    <button type="button" class="cal-nav__btn" data-cal-prev aria-label="Previous month">&#8249;</button>
+                    <span class="cal-nav__month" data-cal-label>&nbsp;</span>
+                    <button type="button" class="cal-nav__btn" data-cal-next aria-label="Next month">&#8250;</button>
+                  </div>
+                  <div class="cal-weekdays" aria-hidden="true">
+                    <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                  </div>
+                  <div class="cal-grid" data-cal-grid></div>
+                  <p class="cal-legend"><span class="cal-legend__dot"></span> Times available</p>
+                </div>
+
+                <div class="scheduler__box">
+                  <h3 class="slots-head" data-slots-head>Select a date</h3>
+                  <div class="slot-list" data-slot-list>
+                    <p class="slot-hint">Pick a highlighted day on the calendar to see open times.</p>
+                  </div>
+                </div>
+              </div>
+
+              <p class="booking-error" data-error="2" role="alert" hidden></p>
+              <div class="booking-actions booking-actions--split">
+                <button type="button" class="btn-ghost" data-back="1">Back</button>
+                <button type="button" class="btn-dark" data-next="3">Review request</button>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="booking-panel" data-step="3">
+              <h3 class="booking-subhead">Review your request</h3>
+              <dl class="booking-review" data-review></dl>
+
+              <label class="booking-consent">
+                <input type="checkbox" name="consent" value="1">
+                <span>I understand this is a request and the appointment is confirmed by email once reviewed.</span>
+              </label>
+
+              <p class="booking-error" data-error="3" role="alert" hidden></p>
+              <div class="booking-actions booking-actions--split">
+                <button type="button" class="btn-ghost" data-back="2">Back</button>
+                <button type="submit" class="btn-dark">Send request</button>
+              </div>
+            </div>
+
+            <!-- Success -->
+            <div class="booking-panel booking-done" data-step="4">
+              <span class="booking-done__tick" aria-hidden="true">&#10003;</span>
+              <h3 class="booking-subhead">Your consultation is requested</h3>
+              <p>Thank you. Your request has been received and you will get a confirmation by email once the time is approved. For anything urgent, call 916-267-5665.</p>
+              <p class="booking-done__ref" data-done-ref></p>
+            </div>
+
+          </form>
+        </div>
+
+        <aside class="contact-info" data-aos="fade-up" data-aos-delay="150">
+          <div class="contact-info__head">
+            <h3>Contact Information</h3>
+            <img src="assets/images/underline-gold.svg" alt="" width="60" height="2">
+          </div>
+
+          <ul class="info-list">
+            <li>
+              <span class="info-icon"><img src="assets/images/icon-phone.svg" alt="" width="18" height="18"></span>
+              <span><small>Phone Number</small><a href="tel:9162675665">916-267-5665</a></span>
+            </li>
+            <li>
+              <span class="info-icon"><img src="assets/images/icon-mail.svg" alt="" width="18" height="18"></span>
+              <span><small>Email Address</small><a href="mailto:rsweck23@gmail.com">rsweck23@gmail.com</a></span>
+            </li>
+            <li>
+              <span class="info-icon"><img src="assets/images/icon-clock.svg" alt="" width="18" height="18"></span>
+              <span><small>Office Hours</small>Mon – Fri: 8:00 AM – 5:00 PM</span>
+            </li>
+          </ul>
+
+          <div class="service-area">
+            <h4>What to Expect</h4>
+            <ul class="expect-list">
+              <li>A 60-minute discussion with Robert Weck directly, never delegated.</li>
+              <li>Scope, timeline and fee guidance for your assignment.</li>
+              <li>Written confirmation by email before the appointment.</li>
+            </ul>
+          </div>
+
+          <div class="service-area">
+            <h4>Primary Service Area</h4>
+            <p>2704 Gray Eagle Ct., Greater Sacramento, California</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <div class="container container--footer">
+      <div class="footer-top">
+        <div class="footer-brand" data-aos="fade-up">
+          <div class="footer-logos">
+            <span class="logo-crop logo-crop--footer"><img src="assets/images/rs-logo.png" alt="R. S. Weck &amp; Associates"></span>
+            <span class="footer-logos__divider" aria-hidden="true"></span>
+            <div class="ai-badge ai-badge--footer" aria-hidden="true">
+              <img class="ai-badge__shape" src="assets/images/badge-footer.svg" alt="">
+              <span class="ai-badge__mark"><img src="assets/images/robchange.png" alt=""></span>
+            </div>
+          </div>
+          <p>Direct, un-delegated commercial appraisal services for attorneys, estate planners, trust administrators, and CPAs across the Greater Sacramento region.</p>
+          <p class="footer-mai">MAI DESIGNATED MEMBER OF THE APPRAISAL INSTITUTE</p>
+        </div>
+
+        <div class="footer-cols" data-aos="fade-up" data-aos-delay="100">
+          <div class="footer-col footer-col--links">
+            <h4>Practice</h4>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="service.html">Services</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Contact</a>
+          </div>
+          <div class="footer-col footer-col--contact">
+            <h4>Contact</h4>
+            <span class="footer-address">2704 Gray Eagle Ct.</span>
+            <a href="mailto:rsweck23@gmail.com">rsweck23@gmail.com</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>Design &amp; Developed By <strong>Premium Web Agency.</strong></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
