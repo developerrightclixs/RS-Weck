@@ -1282,20 +1282,99 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   text-align: center;
 }
 .projects__head p { font-weight: 300; font-size: 16px; line-height: 22.4px; color: var(--grey-text); }
-.projects__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-.project { margin: 0; aspect-ratio: 470 / 309; border-radius: 10px; overflow: hidden; }
-.project img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
-.project:hover img { transform: scale(1.06); }
 
-/* ---------- Featured assignments ---------- */
-.featured { padding: 120px 0 0; }
-.featured__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; max-width: 1260px; margin: 0 auto; }
-.featured-item { text-align: center; }
-.featured-item__img { margin: 0 0 36px; aspect-ratio: 917 / 530; border-radius: 10px; overflow: hidden; }
-.featured-item__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
-.featured-item:hover .featured-item__img img { transform: scale(1.06); }
-.featured-item h3 {
-  margin-bottom: 20px;
+/* ---------- Post grid tab (project thumbnails + expanding detail panel) ---------- */
+.post-grid__items { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+.post-card {
+  position: relative;
+  display: block;
+  aspect-ratio: 470 / 309;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--navy);
+  cursor: pointer;
+  text-align: left;
+}
+.post-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+.post-card:hover img { transform: scale(1.06); }
+.post-card__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 24px;
+  background: linear-gradient(180deg, rgba(18, 59, 99, 0) 35%, rgba(18, 59, 99, 0.9) 100%);
+  transition: background 0.4s ease;
+}
+.post-card:hover .post-card__overlay,
+.post-card.is-active .post-card__overlay { background: linear-gradient(180deg, rgba(18, 59, 99, 0.25) 0%, rgba(18, 59, 99, 0.95) 100%); }
+.post-card__cat {
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--gold);
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.post-card__title {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 1.4vw, 26px);
+  line-height: 1.2;
+  color: var(--white);
+}
+/* Active card gets a gold frame */
+.post-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--gold);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.post-card.is-active::after { opacity: 1; }
+.post-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+.post-detail {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  margin-top: 24px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--white);
+  box-shadow: 0 18px 40px rgba(18, 59, 99, 0.08);
+}
+.post-detail[hidden] { display: none; }
+.post-detail.is-entering { animation: panelIn 0.45s ease both; }
+.post-detail__img { margin: 0; min-height: 320px; }
+.post-detail__img img { width: 100%; height: 100%; object-fit: cover; }
+.post-detail__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  padding: clamp(28px, 3.2vw, 56px);
+  padding-right: clamp(56px, 4.5vw, 80px);
+}
+.post-detail__cat {
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.post-detail h3 {
   font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(24px, 1.875vw, 34px);
@@ -1303,7 +1382,40 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   text-transform: uppercase;
   color: var(--navy);
 }
-.featured-item p { font-weight: 300; font-size: 16px; line-height: 22.4px; color: var(--grey-text); }
+.post-detail p { font-weight: 300; font-size: 16px; line-height: 1.6; color: var(--grey-text); }
+.post-detail__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--navy);
+  border-radius: 50%;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--navy);
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.post-detail__close:hover { background: var(--gold); border-color: var(--gold); color: var(--white); }
+
+/* Compact variant used inside the About us "Prior Experience" tab */
+.post-grid--compact { margin-top: 8px; }
+.post-grid--compact .post-grid__items { gap: 10px; }
+.post-grid--compact .post-card { aspect-ratio: 4 / 3; }
+.post-grid--compact .post-card__overlay { gap: 6px; padding: 12px; }
+.post-grid--compact .post-card__cat { padding: 3px 8px; font-size: 10px; }
+.post-grid--compact .post-card__title { font-family: var(--font-body); font-weight: 600; font-size: 13px; line-height: 1.3; }
+.post-grid--compact .post-detail { grid-template-columns: 240px 1fr; margin-top: 16px; background: var(--grey-bg); box-shadow: none; }
+.post-grid--compact .post-detail__img { min-height: 200px; }
+.post-grid--compact .post-detail__body { gap: 8px; padding: 20px 56px 20px 24px; }
+.post-grid--compact .post-detail h3 { font-family: var(--font-body); font-weight: 600; font-size: 18px; line-height: 1.35; text-transform: none; }
+.post-grid--compact .post-detail p { font-weight: 400; font-size: 15px; line-height: 1.5; }
+.post-grid--compact .post-detail__close { top: 12px; right: 12px; width: 30px; height: 30px; font-size: 18px; }
 
 /* ---------- Everything you need to know ---------- */
 .know { padding-block: var(--section-gap); }
@@ -1340,8 +1452,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .about-intro__photo { width: 100%; max-width: 569px; align-self: center; }
   .contact-layout { flex-direction: column; align-items: stretch; }
   .contact-info { width: 100%; }
-  .projects__grid { grid-template-columns: repeat(2, 1fr); }
-  .projects__grid .project:last-child { grid-column: 1 / -1; aspect-ratio: 940 / 309; }
+  .post-detail { grid-template-columns: 1fr; }
+  .post-detail__img { min-height: 0; aspect-ratio: 16 / 9; }
 }
 
 @media (max-width: 767px) {
@@ -1354,11 +1466,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .stat { min-height: 0; padding: 32px 12px 24px; }
   .stat__value { font-size: 28px; }
   .projects { padding: 72px 0; }
-  .projects__grid { grid-template-columns: 1fr; }
-  .projects__grid .project:last-child { aspect-ratio: 470 / 309; }
-  .featured { padding-top: 72px; }
-  .featured__grid { grid-template-columns: 1fr; gap: 56px; }
-  .featured-item__img { margin-bottom: 24px; }
+  .post-grid__items { gap: 8px; }
+  .post-card__overlay { padding: 10px; }
+  .post-card__cat { display: none; }
+  .post-card__title { font-family: var(--font-body); font-weight: 600; font-size: 12px; line-height: 1.3; }
+  .post-grid--compact .post-detail { grid-template-columns: 1fr; }
+  .post-grid--compact .post-detail__img { min-height: 0; }
   .accordion--know { gap: 16px; }
   .accordion--know .acc-head,
   .accordion--know .acc-item.is-open .acc-head { padding: 20px 56px 20px 24px; }
@@ -1409,25 +1522,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .cv-link:hover { color: var(--gold); gap: 12px; }
 
-/* Prior Experience project card */
-.prior-project {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  margin-top: 8px;
-  border-radius: 10px;
-  overflow: hidden;
-  background: var(--grey-bg);
-}
-.prior-project img { width: 100%; height: 100%; min-height: 200px; object-fit: cover; }
-.prior-project__body { padding: 20px 24px; display: flex; flex-direction: column; gap: 8px; }
-.prior-project h3 { font-weight: 600; font-size: 18px; line-height: 1.35; color: var(--navy); }
-.prior-project p { font-size: 15px; line-height: 1.5; }
-
 @media (max-width: 767px) {
   .acc-panel ul { padding: 0 20px 12px 44px; }
   .accordion--faq .acc-panel p:not(:last-child) { padding-bottom: 12px; }
-  .prior-project { grid-template-columns: 1fr; }
-  .prior-project img { height: 190px; min-height: 0; }
 }
 
 /* =========================================================

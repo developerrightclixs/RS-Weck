@@ -80,13 +80,58 @@
           <div class="exp-panel" id="exp-prior" role="tabpanel" hidden>
             <h2>Prior Experience</h2>
             <p>Complex assignments require a depth of understanding that often times involve knowledge and insight that is only acquired over years of professional practice. The projects below represent a few such assignments completed over my career.</p>
-            <article class="prior-project">
-              <img src="assets/images/project-assisted-living.png" alt="Luxury assisted living facility with courtyard pond at dusk">
-              <div class="prior-project__body">
-                <h3>Portfolio of Luxury Assisted Living Facilities</h3>
-                <p>CalSTRS sought an As-Is appraisal on a 13-facility joint venture with one of California's largest operators. Property locations included Laguna Hills, Mission Viejo, Beverly Hills, San Ramon and Walnut Creek. Analysis included a Discounted Cash Flow Analysis with the value exceeding $600 million.</p>
+            <div class="post-grid post-grid--compact" data-post-grid>
+              <div class="post-grid__items">
+                <button type="button" class="post-card is-active" aria-expanded="true" aria-controls="prior-living">
+                  <img src="assets/images/project-assisted-living.png" alt="" loading="lazy">
+                  <span class="post-card__overlay">
+                    <span class="post-card__cat">Senior Living</span>
+                    <span class="post-card__title">Portfolio of Luxury Assisted Living Facilities</span>
+                  </span>
+                </button>
+                <button type="button" class="post-card" aria-expanded="false" aria-controls="prior-broadway">
+                  <img src="assets/images/project-700-broadway.png" alt="" loading="lazy">
+                  <span class="post-card__overlay">
+                    <span class="post-card__cat">Mixed-Use</span>
+                    <span class="post-card__title">700 Broadway, Santa Monica</span>
+                  </span>
+                </button>
+                <button type="button" class="post-card" aria-expanded="false" aria-controls="prior-ranch">
+                  <img src="assets/images/project-nine-mile-ranch.png" alt="" loading="lazy">
+                  <span class="post-card__overlay">
+                    <span class="post-card__cat">Master-Planned Community</span>
+                    <span class="post-card__title">Nine Mile Ranch, Tehama County</span>
+                  </span>
+                </button>
               </div>
-            </article>
+              <article class="post-detail is-active" id="prior-living">
+                <figure class="post-detail__img"><img src="assets/images/project-assisted-living.png" alt="Luxury assisted living facility with courtyard pond at dusk" loading="lazy"></figure>
+                <div class="post-detail__body">
+                  <span class="post-detail__cat">Senior Living</span>
+                  <h3>Portfolio of Luxury Assisted Living Facilities</h3>
+                  <p>CalSTRS sought an As-Is appraisal on a 13-facility joint venture with one of California's largest operators. Property locations included Laguna Hills, Mission Viejo, Beverly Hills, San Ramon and Walnut Creek. Analysis included a Discounted Cash Flow Analysis with the value exceeding $600 million.</p>
+                </div>
+                <button type="button" class="post-detail__close" aria-label="Close project details"><span aria-hidden="true">&times;</span></button>
+              </article>
+              <article class="post-detail" id="prior-broadway" hidden>
+                <figure class="post-detail__img"><img src="assets/images/project-700-broadway.png" alt="Rendering of an 8-story mixed-use building with a Von's Market at 700 Broadway, Santa Monica" loading="lazy"></figure>
+                <div class="post-detail__body">
+                  <span class="post-detail__cat">Mixed-Use</span>
+                  <h3>700 Broadway, Santa Monica</h3>
+                  <p>In 2022, this site was improved with an older 35,000 Von’s Market situated on an acre of land seven blocks from the Pacific Ocean. Reliant Companies, a major national development firm obtained entitlements to construct an 8-story tax-credit apartment project, a new 60,000 square foot Von’s Market with two-levels of underground parking, a bowling alley and a premier Equinox Health Club.</p>
+                </div>
+                <button type="button" class="post-detail__close" aria-label="Close project details"><span aria-hidden="true">&times;</span></button>
+              </article>
+              <article class="post-detail" id="prior-ranch" hidden>
+                <figure class="post-detail__img"><img src="assets/images/project-nine-mile-ranch.png" alt="Aerial rendering of Nine Mile Ranch residential community and golf course, Tehama County" loading="lazy"></figure>
+                <div class="post-detail__body">
+                  <span class="post-detail__cat">Master-Planned Community</span>
+                  <h3>Nine Mile Ranch, Tehama County</h3>
+                  <p>Planned as Del Webb’s 3rd retirement community in Northern California this property became a casualty of the 2008 recession. Pulte walked away from a $20 million investment after securing entitlements for 3,700 residential units, an 18-hole championship golf course, and 230,000 square feet of commercial development. With a 20-year development agreement in place, Robin Weck appraised this property based on the existing entitlements.</p>
+                </div>
+                <button type="button" class="post-detail__close" aria-label="Close project details"><span aria-hidden="true">&times;</span></button>
+              </article>
+            </div>
           </div>
 
           <a href="contact.html" class="btn-gold">Get a Quote</a>

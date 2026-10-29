@@ -89,6 +89,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Post grid tab: clicking a project card opens its detail panel below the grid
+  document.querySelectorAll("[data-post-grid]").forEach((grid) => {
+    const cards = grid.querySelectorAll(".post-card");
+    const close = () => {
+      cards.forEach((c) => {
+        c.classList.remove("is-active");
+        c.setAttribute("aria-expanded", "false");
+        document.getElementById(c.getAttribute("aria-controls")).hidden = true;
+      });
+    };
+    cards.forEach((card) => {
+      card.addEventListener("click", () => {
+        if (card.classList.contains("is-active")) return close();
+        close();
+        card.classList.add("is-active");
+        card.setAttribute("aria-expanded", "true");
+        const panel = document.getElementById(card.getAttribute("aria-controls"));
+        panel.hidden = false;
+        panel.classList.remove("is-entering");
+        void panel.offsetWidth; // restart the entrance animation
+        panel.classList.add("is-entering");
+      });
+    });
+    grid.querySelectorAll(".post-detail__close").forEach((btn) => btn.addEventListener("click", close));
+  });
+
   // Stat counters count up the first time they scroll into view
   const counters = document.querySelectorAll(".stat__value[data-count]");
   if (counters.length && "IntersectionObserver" in window) {
