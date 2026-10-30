@@ -140,10 +140,100 @@ document.addEventListener("DOMContentLoaded", () => {
     counters.forEach((el) => observer.observe(el));
   }
 
-  // Consultation form: client-side validation only (no backend wired up yet)
-  const form = document.getElementById("contactForm");
-  if (form) {
-    const status = document.getElementById("formStatus");
+  // Lunch meeting pop-up: opened from the header triangle badge on every page.
+  // Built here so the markup lives in one place; it must exist before the
+  // date-picker and validation hooks below run.
+  const lunchOpeners = document.querySelectorAll("[data-lunch-open]");
+  if (lunchOpeners.length) {
+    const modal = document.createElement("dialog");
+    modal.className = "lunch-modal";
+    modal.setAttribute("aria-labelledby", "lunchModalTitle");
+    modal.innerHTML = `
+      <div class="contact-card contact-card--lunch">
+        <button type="button" class="lunch-modal__close" aria-label="Close" data-lunch-close><span aria-hidden="true">&times;</span></button>
+        <div class="contact-card__head">
+          <h2 id="lunchModalTitle">Lunch Meeting Request</h2>
+          <p>Robin Weck is offering a 60-minute lunchtime discussion (see topics) to firms utilizing Commercial Appraisal Services. Select an available date on the calendar and we will confirm the date and time you have selected.</p>
+        </div>
+        <form class="contact-form js-validate" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label for="lm-name">Full Name</label>
+              <input type="text" id="lm-name" name="name" placeholder="Thomas Benton" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="lm-company">Company</label>
+              <input type="text" id="lm-company" name="company" placeholder="Benton &amp; Associates LLP" autocomplete="organization" required>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="lm-email">Email Address</label>
+              <input type="email" id="lm-email" name="email" placeholder="t.benton@example.com" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="lm-phone">Phone Number</label>
+              <input type="tel" id="lm-phone" name="phone" placeholder="(916) 555-0140" autocomplete="tel" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="lm-topic">Discussion Topics</label>
+            <select id="lm-topic" name="topic" required>
+              <option value="" selected disabled>Select a topic</option>
+              <option>USPAP</option>
+              <option>Not So Common Errors and Mistakes</option>
+              <option>Artificial Intelligence</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="lm-date">Preferred Date</label>
+            <div class="date-picker">
+              <input type="date" id="lm-date" name="date" required data-weekday-date>
+              <button type="button" class="date-picker__btn" data-open-picker="lm-date">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3V2Zm12 8H5v9h14v-9ZM5 6v2h14V6H5Zm2 6h3v3H7v-3Z"/></svg>
+                Calendar
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn-dark">Request Lunch Meeting</button>
+          <p class="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>`;
+    document.body.appendChild(modal);
+
+    lunchOpeners.forEach((btn) => btn.addEventListener("click", () => {
+      setNav(false);
+      modal.showModal();
+    }));
+    modal.querySelector("[data-lunch-close]").addEventListener("click", () => modal.close());
+    // Clicking the dimmed backdrop (the dialog itself, outside the card) closes it
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.close();
+    });
+  }
+
+  // Lunch meeting date: weekdays from tomorrow on; the Calendar button opens the native picker
+  document.querySelectorAll("input[data-weekday-date]").forEach((input) => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const pad = (n) => String(n).padStart(2, "0");
+    input.min = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth() + 1)}-${pad(tomorrow.getDate())}`;
+    input.addEventListener("input", () => {
+      const day = input.value ? new Date(input.value + "T12:00").getDay() : 1;
+      input.setCustomValidity(day === 0 || day === 6 ? "Please choose a weekday." : "");
+    });
+  });
+  document.querySelectorAll("[data-open-picker]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const input = document.getElementById(btn.dataset.openPicker);
+      input.focus();
+      if (typeof input.showPicker === "function") input.showPicker();
+    });
+  });
+
+  // Quote + lunch meeting forms: client-side validation only (no backend wired up yet)
+  document.querySelectorAll("form.js-validate").forEach((form) => {
+    const status = form.querySelector(".form-status");
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       let firstInvalid = null;
@@ -168,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const field = e.target.closest(".field");
       if (field && e.target.checkValidity()) field.classList.remove("has-error");
     });
-  }
+  });
 
   // Book a consultant: 3-step request (details -> date & time -> confirm).
   // Availability is generated client-side (weekdays, tomorrow onward, ~60 days)

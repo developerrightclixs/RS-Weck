@@ -131,6 +131,15 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .logo-crop--footer { width: 126px; height: 96px; }
 
+.header-brand { display: flex; align-items: center; flex-shrink: 0; }
+.header-brand__divider {
+  width: 1px;
+  height: 52px;
+  margin: 0 18px;
+  background: rgba(255, 255, 255, 0.35);
+}
+.header-brand .ai-badge { align-self: center; margin-top: 18px; }
+
 .main-nav {
   display: flex;
   align-items: center;
@@ -230,6 +239,14 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   font-size: clamp(36px, 4.1667vw, 80px);
   line-height: 1.25;
 }
+.hero h1.hero-statement {
+  max-width: 1100px;
+  font-family: "Amasis MT Pro Black", "Amasis MT Pro", "Bitter", Georgia, serif;
+  font-weight: 800;
+  font-size: clamp(32px, 3.4vw, 62px);
+  line-height: 1.18;
+  letter-spacing: -0.5px;
+}
 .hero p {
   max-width: 1051px;
   font-weight: 300;
@@ -250,19 +267,19 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   width: min(1504px, 100%);
   margin-inline: auto;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 460px));
-  justify-content: space-between;
-  row-gap: 100px;
-  column-gap: 32px;
-  padding-top: 70px;
+  grid-template-columns: repeat(3, minmax(0, 360px));
+  justify-content: center;
+  row-gap: 84px;
+  column-gap: 40px;
+  padding-top: 56px;
 }
 
 .service-card {
   position: relative;
   container-type: inline-size;
   background: var(--white);
-  border-radius: 60px;
-  padding-bottom: 40px;
+  border-radius: 44px;
+  padding-bottom: 32px;
   transition: background-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
 }
 .service-card::before {
@@ -273,7 +290,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   width: 100%;
   height: calc(100cqw * 227.69 / 460);
   background: url("../images/card-top.svg") center / 100% 100% no-repeat;
-  border-radius: 60px 60px 0 0;
+  border-radius: 44px 44px 0 0;
 }
 
 /* 3D icons are crops of one sprite sheet; offsets come from Figma, scaled to card width */
@@ -297,21 +314,21 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-height: 176px;
+  min-height: 150px;
 }
 .service-card h3 {
-  min-height: 56px;
+  min-height: 52px;
   display: flex;
   align-items: center;
   font-weight: 600;
-  font-size: 24px;
-  line-height: 32px;
+  font-size: 20px;
+  line-height: 26px;
   color: var(--navy);
   transition: color 0.35s ease;
 }
 .service-card p {
-  font-size: 16px;
-  line-height: 22.4px;
+  font-size: 14.5px;
+  line-height: 21px;
   color: var(--grey-text);
   transition: color 0.35s ease;
 }
@@ -654,7 +671,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 @media (max-width: 1100px) {
   .main-nav { gap: 32px; }
-  .services-grid { grid-template-columns: repeat(2, minmax(0, 460px)); justify-content: center; column-gap: 40px; }
+  .services-grid { grid-template-columns: repeat(2, minmax(0, 360px)); justify-content: center; column-gap: 40px; }
   .expertise-row { flex-direction: column; align-items: center; gap: 48px; }
   .expertise-divider { display: none; }
   .expertise-tabs { width: auto; }
@@ -665,7 +682,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @media (max-width: 900px) {
   .nav-toggle { display: flex; }
   .header-inner { height: 80px; }
-  .header-inner .ai-badge { display: none; }
+  .header-brand__divider { height: 40px; margin: 0 12px; }
+  .header-brand .ai-badge { transform: scale(0.8); transform-origin: left center; margin-top: 14px; }
   .main-nav {
     position: absolute;
     top: 100%;
@@ -697,7 +715,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 @media (max-width: 767px) {
   :root { --gutter: 16px; }
-  .services-grid { grid-template-columns: minmax(0, 460px); row-gap: 72px; }
+  .services-grid { grid-template-columns: minmax(0, 380px); row-gap: 72px; }
   .service-card { border-radius: 40px; }
   .service-card::before { border-radius: 40px 40px 0 0; }
   .eyebrow { font-size: 13px; letter-spacing: 3px; width: 260px; }
@@ -840,6 +858,73 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   gap: 80px;
 }
 
+.contact-stack {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.contact-stack .contact-card { flex: none; }
+.contact-card.contact-card--lunch { background: var(--navy); color: var(--white); }
+.contact-card--lunch .field label { color: var(--white); }
+.contact-card--lunch .form-status { color: var(--white); }
+.contact-card--lunch .form-status.is-error { color: #ffb4ab; }
+.contact-card--lunch .btn-dark { background: var(--gold); color: #0b1623; }
+.contact-card--lunch .btn-dark:hover { background: var(--white); }
+
+/* Lunch meeting pop-up (header triangle badge) */
+.lunch-modal {
+  width: min(644px, calc(100% - 32px));
+  max-height: calc(100% - 32px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  overflow: auto;
+}
+.lunch-modal::backdrop { background: rgba(11, 22, 35, 0.6); }
+.lunch-modal[open] { animation: panelIn 0.3s ease both; }
+.lunch-modal .contact-card { position: relative; }
+.lunch-modal .contact-card__head { padding-right: 40px; }
+.lunch-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  background: none;
+  color: var(--white);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.lunch-modal__close:hover { background: var(--white); color: var(--navy); }
+.lunch-modal__close:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.date-picker { display: flex; gap: 12px; }
+.date-picker input { flex: 1 1 auto; min-width: 0; }
+.date-picker__btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px;
+  border-radius: 8px;
+  background: var(--gold);
+  font-weight: 600;
+  font-size: 15px;
+  color: #0b1623;
+  transition: background-color 0.25s ease;
+}
+.date-picker__btn:hover { background: var(--white); }
+
 .contact-card {
   flex: 1 1 0;
   min-width: 0;
@@ -978,7 +1063,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 
 /* ---------- Booking (book-a-consultant) ---------- */
-.ai-badge--header { display: block; transition: transform 0.3s ease, opacity 0.3s ease; }
+.ai-badge--header { display: block; padding: 0; border: 0; background: none; cursor: pointer; transition: transform 0.3s ease, opacity 0.3s ease; }
 .ai-badge--header:hover { transform: translateY(-2px); opacity: 0.9; }
 .ai-badge--header:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
 
@@ -1452,6 +1537,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .about-intro__photo { width: 100%; max-width: 569px; align-self: center; }
   .contact-layout { flex-direction: column; align-items: stretch; }
   .contact-info { width: 100%; }
+  .contact-section .contact-info { order: 2; }
   .post-detail { grid-template-columns: 1fr; }
   .post-detail__img { min-height: 0; aspect-ratio: 16 / 9; }
 }
@@ -1459,7 +1545,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @media (max-width: 767px) {
   .page-about .about-tabs { padding-bottom: 64px; }
   .exp-tab { min-width: 0; flex: 1 1 auto; }
-  .contact-card { padding: 28px 20px; }
+    .contact-card { padding: 28px 20px; }
   .field-row { flex-direction: column; gap: 24px; }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
   .stats .stat:last-child { grid-column: 1 / -1; }
