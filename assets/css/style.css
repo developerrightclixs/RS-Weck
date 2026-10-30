@@ -525,7 +525,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* FAQ */
 .faq {
-  margin-top: var(--section-gap);
   padding: 138px 0 189px;
   background: var(--grey-bg);
 }
@@ -772,7 +771,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* ---------- About us (experience tabs) ---------- */
 .about-tabs { padding-top: clamp(80px, 13.7vw, 263px); }
-.page-about .about-tabs { padding: clamp(100px, 23.3vw, 448px) 0 80px; }
+.page-about .about-tabs { padding: clamp(100px, 12.3vw, 448px) 0 80px; }
 .page-home .services { margin-top: clamp(80px, 7.8vw, 150px); }
 
 .about-tabs__inner {
