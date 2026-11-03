@@ -1671,3 +1671,31 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .cta-band__inner { flex-direction: column; align-items: flex-start; padding: 36px 24px; }
   .btn-dark--auto { width: 100%; }
 }
+
+/* ---------- Book a Consultant CTA (header + hero) ---------- */
+.main-nav a.header-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  background: var(--gold);
+  font-weight: 500;
+  color: var(--white);
+  white-space: nowrap;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.main-nav a.header-cta:hover,
+.main-nav a.header-cta.active { background: transparent; color: var(--gold); }
+@media (max-width: 1100px) {
+  .main-nav a.header-cta { padding: 10px 16px; }
+}
+@media (max-width: 900px) {
+  .main-nav a.header-cta { margin-top: 16px; padding: 14px 22px; border-bottom: 1px solid var(--gold); }
+}
+.hero-cta { width: auto; padding-inline: 32px; margin-top: 16px; text-transform: none; }
+.hero-cta:hover { background: var(--white); color: var(--navy); }
+
+/* Booking page: no banner, form sits right under the header (matches live page) */
+.page-booking .contact-section { padding-block: 24px clamp(60px, 6vw, 120px); }
