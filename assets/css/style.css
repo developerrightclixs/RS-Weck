@@ -1274,7 +1274,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .about-intro p + p { margin-top: -2px; }
 
 /* ---------- Why hire us + stats ---------- */
-.why-hire { padding-top: clamp(80px, 10.4vw, 200px); }
+.why-hire { padding-top: clamp(80px, 10.4vw, 200px); padding-bottom: clamp(72px, 8.3vw, 120px); }
 .why-hire__inner {
   width: min(1236px, 100% - var(--gutter) * 2);
   display: flex;
