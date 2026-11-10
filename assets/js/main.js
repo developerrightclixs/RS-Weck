@@ -155,7 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <h2 id="lunchModalTitle">Lunch Meeting Request</h2>
           <p>Robin Weck is offering a 60-minute lunchtime discussion (see topics) to firms utilizing Commercial Appraisal Services. Select an available date on the calendar and we will confirm the date and time you have selected.</p>
         </div>
-        <form class="contact-form js-validate" novalidate>
+        <form class="contact-form js-validate" data-form="lunch" novalidate>
+          <div class="hp-field" aria-hidden="true"><label for="lm-website">Website</label><input type="text" id="lm-website" name="website" tabindex="-1" autocomplete="off"></div>
           <div class="field-row">
             <div class="field">
               <label for="lm-name">Full Name</label>
@@ -231,13 +232,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Quote + lunch meeting forms: client-side validation only (no backend wired up yet)
+  // Every form posts to the shared PHP mailer, which emails it over SMTP
+  const MAIL_ENDPOINT = "api/send-mail.php";
+  const sendForm = async (payload) => {
+    const res = await fetch(MAIL_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.success !== true) throw new Error(data.message || `Send failed (${res.status})`);
+  };
+
+  // Quote + lunch meeting forms: validate, then send through the mailer
   document.querySelectorAll("form.js-validate").forEach((form) => {
     const status = form.querySelector(".form-status");
-    form.addEventListener("submit", (e) => {
+    const button = form.querySelector('button[type="submit"]');
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (button.disabled) return;
       let firstInvalid = null;
-      form.querySelectorAll("input, select, textarea").forEach((field) => {
+      form.querySelectorAll(".field input, .field select, .field textarea").forEach((field) => {
         const invalid = !field.checkValidity();
         field.closest(".field").classList.toggle("has-error", invalid);
         if (invalid && !firstInvalid) firstInvalid = field;
@@ -250,9 +265,26 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      const payload = { form: form.dataset.form, page: document.title };
+      new FormData(form).forEach((v, k) => { payload[k] = typeof v === "string" ? v.trim() : ""; });
+
+      const label = button.textContent;
+      button.disabled = true;
+      button.textContent = "Sending…";
       status.classList.remove("is-error");
-      status.textContent = "Thank you — your request has been received. We will be in touch shortly.";
-      form.reset();
+      status.textContent = "";
+      try {
+        await sendForm(payload);
+        status.textContent = "Thank you — your request has been received. We will be in touch shortly.";
+        form.reset();
+      } catch (err) {
+        console.error("Form request failed:", err.message);
+        status.textContent = "Sorry, your request could not be sent. Please try again or call 916-267-5665.";
+        status.classList.add("is-error");
+      } finally {
+        button.disabled = false;
+        button.textContent = label;
+      }
     });
     form.addEventListener("input", (e) => {
       const field = e.target.closest(".field");
@@ -260,8 +292,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Book a consultant: 3-step request (details -> date & time -> confirm).
-  // Availability is generated client-side (weekdays, tomorrow onward, ~60 days)
+  // Book a lunch meeting: 3-step request (details -> date & time -> confirm).
+  // Availability is generated client-side (Tue-Thu only, one 12:00 PM slot per day,
+  // tomorrow onward, ~60 days)
   // until a booking backend is wired up.
   const booking = document.getElementById("bookingForm");
   if (booking) {
@@ -274,14 +307,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextBtn = card.querySelector("[data-cal-next]");
     const slotList = card.querySelector("[data-slot-list]");
     const slotsHead = card.querySelector("[data-slots-head]");
-    const SLOT_HOURS = [8, 9, 10, 11, 13, 14, 15, 16];
+    const SLOT_HOURS = [12];
+    const OPEN_DAYS = [2, 3, 4]; // Tuesday, Wednesday, Thursday
     const DURATION = 60;
 
     const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
     const today = startOfDay(new Date());
     const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
     const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 59);
-    const isOpen = (d) => d >= minDate && d <= maxDate && d.getDay() !== 0 && d.getDay() !== 6;
+    const isOpen = (d) => d >= minDate && d <= maxDate && OPEN_DAYS.includes(d.getDay());
     const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const hourLabel = (h) => `${h % 12 || 12}:00 ${h < 12 ? "AM" : "PM"}`;
     const escapeHtml = (s) => s.replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" })[c]);
@@ -332,6 +366,12 @@ document.addEventListener("DOMContentLoaded", () => {
       grid.querySelectorAll(".cal-day").forEach((b) => b.classList.toggle("is-selected", b.dataset.date === iso(d)));
       slotsHead.textContent = d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
       slotList.innerHTML = SLOT_HOURS.map((h) => `<button type="button" class="slot" data-hour="${h}">${hourLabel(h)}</button>`).join("");
+      // Only one time per day, so select it straight away
+      if (SLOT_HOURS.length === 1) {
+        selected.hour = SLOT_HOURS[0];
+        slotList.querySelector(".slot").classList.add("is-selected");
+        setError(2, "");
+      }
     };
 
     const validateDetails = () => {
@@ -402,7 +442,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    booking.addEventListener("submit", (e) => {
+    // Requests are emailed over SMTP by api/send-mail.php (PHPMailer)
+    const submitBtn = booking.querySelector('button[type="submit"]');
+
+    booking.addEventListener("submit", async (e) => {
       e.preventDefault();
       // Enter in an earlier step triggers implicit submission; only step 3 sends
       if (card.querySelector(".booking-panel.is-active").dataset.step !== "3") return;
@@ -410,7 +453,37 @@ document.addEventListener("DOMContentLoaded", () => {
         return setError(3, "Tick the box to confirm you understand how the appointment is confirmed.");
       }
       setError(3, "");
-      card.querySelector("[data-done-ref]").textContent = `${slotsHead.textContent} at ${hourLabel(selected.hour)}`;
+
+      const when = `${slotsHead.textContent} at ${hourLabel(selected.hour)}`;
+      const payload = {
+        form: "booking",
+        date: slotsHead.textContent,
+        time: `${hourLabel(selected.hour)} (${DURATION} minutes)`,
+        full_name: value("full_name"),
+        email: value("email"),
+        phone: value("phone"),
+        company: value("company"),
+        meeting_type: value("meeting_type"),
+        service_type: value("service_type"),
+        property_address: value("property_address"),
+        message: value("message"),
+        website: value("website"), // honeypot, stays empty for real visitors
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sending…";
+      try {
+        await sendForm(payload);
+      } catch (err) {
+        console.error("Booking request failed:", err.message);
+        setError(3, "Sorry, your request could not be sent. Please try again or call 916-267-5665.");
+        return;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Send request";
+      }
+
+      card.querySelector("[data-done-ref]").textContent = when;
       pills.forEach((pill) => {
         pill.classList.remove("is-active");
         pill.classList.add("is-done");

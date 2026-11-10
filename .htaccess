@@ -1,0 +1,2 @@
+# Keep Composer files and packages out of public reach
+RedirectMatch 404 /(vendor/|composer\.(json|lock)$)

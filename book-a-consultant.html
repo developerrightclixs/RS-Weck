@@ -45,13 +45,33 @@
 
   <main>
 
+    <!-- ===== Hero: what to expect ===== -->
+    <section class="hero hero--home hero--lunch">
+      <div class="hero-bg" aria-hidden="true">
+        <img src="assets/images/hero-bg.jpg" alt="">
+      </div>
+      <div class="container hero-content">
+        <h1 class="hero-statement" data-aos="fade-up">What to expect</h1>
+        <p data-aos="fade-up" data-aos-delay="100">Robin Weck is offering a 60-minute lunchtime discussion to firms utilizing Commercial Appraisal Services. Select an available date on the calendar below and we will confirm the date and time you have selected.</p>
+        <ul class="hero-points" data-aos="fade-up" data-aos-delay="200">
+          <li>Discuss how to strengthen their cases, identifying valuation weaknesses, and providing credible, defensible real estate analysis.</li>
+          <li>Discussion of USPAP and the most common errors and omissions appraisers make.</li>
+          <li>A current topic of your choice.</li>
+        </ul>
+      </div>
+      <a href="#booking" class="scroll-hint">
+        <span class="scroll-mouse" aria-hidden="true"><span class="scroll-mouse__wheel"></span></span>
+        <span class="scroll-hint__text">Scroll down to book a meeting</span>
+      </a>
+    </section>
+
     <!-- ===== Booking ===== -->
     <section class="contact-section" id="booking">
       <div class="container contact-layout">
         <div class="contact-card booking" data-aos="fade-up">
           <div class="contact-card__head">
-            <h2>Book a Consultation</h2>
-            <p>Reserve a time for a confidential discussion about your commercial appraisal needs.</p>
+            <h2>Book a Lunch Meeting</h2>
+            <p>Lunch meetings are held Tuesday through Thursday at 12:00 PM. Pick a date and we will confirm by email.</p>
           </div>
 
           <ol class="booking-steps" aria-label="Booking progress">
@@ -61,6 +81,11 @@
           </ol>
 
           <form class="contact-form booking-form" id="bookingForm" novalidate>
+            <!-- Spam trap: hidden from people, bots tend to fill it -->
+            <div class="hp-field" aria-hidden="true">
+              <label for="bk-website">Website</label>
+              <input type="text" id="bk-website" name="website" tabindex="-1" autocomplete="off">
+            </div>
 
             <!-- Step 1 -->
             <div class="booking-panel is-active" data-step="1">
@@ -169,7 +194,7 @@
             <!-- Success -->
             <div class="booking-panel booking-done" data-step="4">
               <span class="booking-done__tick" aria-hidden="true">&#10003;</span>
-              <h3 class="booking-subhead">Your consultation is requested</h3>
+              <h3 class="booking-subhead">Your lunch meeting is requested</h3>
               <p>Thank you. Your request has been received and you will get a confirmation by email once the time is approved. For anything urgent, call <a href="tel:+19162675665">916-267-5665</a>.</p>
               <p class="booking-done__ref" data-done-ref></p>
             </div>
@@ -197,15 +222,6 @@
               <span><small>Address</small>2074 Gray Eagle Court, Gold River, CA 95670</span>
             </li>
           </ul>
-
-          <div class="service-area">
-            <h4>What to expect</h4>
-            <ul class="expect-list">
-              <li>Discuss how to strengthen their cases, identifying valuation weaknesses, and providing credible, defensible real estate analysis.</li>
-              <li>Discussion of USPAP and the most common errors and omissions appraisers make.</li>
-              <li>A current topic of your choice.</li>
-            </ul>
-          </div>
 
           <div class="service-area">
             <h4>Primary Service Area</h4>

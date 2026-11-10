@@ -1,0 +1,6 @@
+# SMTP credentials: never commit. Locally copy api/config.example.php to api/config.php;
+# on Vercel set SMTP_* environment variables instead.
+api/config.php
+
+# Composer packages (installed by `composer install`, and by Vercel on deploy)
+/vendor/

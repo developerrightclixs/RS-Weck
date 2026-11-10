@@ -1712,3 +1712,87 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @media (max-width: 767px) {
   .hero-cta { height: auto; min-height: 52px; padding: 12px 24px; max-width: 100%; text-align: center; line-height: 1.3; }
 }
+
+/* Lunch meeting page hero: centered like the home hero; the pointers read as
+   plain centered lines matching the paragraph */
+.hero--lunch { min-height: 720px; }
+.hero--lunch .hero-content { padding-bottom: 180px; gap: 24px; }
+.hero--lunch p,
+.hero-points {
+  max-width: 1000px;
+  margin: 0;
+  font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(16px, 1.25vw, 24px);
+  line-height: 1.55;
+  color: var(--light-text);
+}
+.hero-points {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.page-booking #booking { scroll-margin-top: 90px; }
+.page-booking .contact-section { padding-block: clamp(60px, 6vw, 120px); }
+
+/* Scroll hint: mouse icon with a label underneath, links to the booking form */
+.scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--white);
+  opacity: 0.85;
+  transition: opacity 0.3s ease, color 0.3s ease;
+}
+.scroll-hint:hover,
+.scroll-hint:focus-visible { opacity: 1; color: var(--gold); }
+.scroll-hint__text {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.scroll-mouse {
+  position: relative;
+  width: 28px;
+  height: 46px;
+  border: 2px solid currentColor;
+  border-radius: 16px;
+}
+.scroll-mouse__wheel {
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  width: 4px;
+  height: 9px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: currentColor;
+  animation: scroll-wheel 1.6s ease-in-out infinite;
+}
+@keyframes scroll-wheel {
+  0%   { transform: translateY(0); opacity: 1; }
+  70%  { transform: translateY(12px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-mouse__wheel { animation: none; }
+}
+@media (max-width: 767px) {
+  .hero--lunch { min-height: 0; }
+  .hero--lunch .hero-content { padding-bottom: 150px; }
+  .scroll-hint { bottom: 28px; }
+  .scroll-hint__text { font-size: 11px; letter-spacing: 1.5px; }
+  .scroll-mouse { width: 24px; height: 40px; }
+}
+
+/* Honeypot field on the booking form: kept off-screen for people */
+.hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }

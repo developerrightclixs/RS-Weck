@@ -1,0 +1,5 @@
+# Never upload local secrets; on Vercel the SMTP settings are environment variables
+api/config.php
+api/config.example.php
+# Vercel installs Composer packages itself from composer.json
+/vendor
