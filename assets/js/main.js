@@ -241,7 +241,12 @@ document.addEventListener("DOMContentLoaded", () => {
       body: JSON.stringify(payload),
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.success !== true) throw new Error(data.message || `Send failed (${res.status})`);
+    if (!res.ok || data.success !== true) {
+      const err = new Error(data.message || `Send failed (${res.status})`);
+      err.status = res.status;
+      err.data = data;
+      throw err;
+    }
   };
 
   // Quote + lunch meeting forms: validate, then send through the mailer
@@ -293,9 +298,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Book a lunch meeting: 3-step request (details -> date & time -> confirm).
-  // Availability is generated client-side (Tue-Thu only, one 12:00 PM slot per day,
-  // tomorrow onward, ~60 days)
-  // until a booking backend is wired up.
+  // Tue-Thu only, one 12:00 PM slot per day, tomorrow onward (~60 days).
+  // Each date can be booked once: the server keeps the reserved dates and the
+  // calendar greys them out.
   const booking = document.getElementById("bookingForm");
   if (booking) {
     const card = booking.closest(".booking");
@@ -322,6 +327,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let view = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
     const selected = { date: null, hour: null };
+    const reserved = new Set();
+
+    const loadReserved = async () => {
+      try {
+        const res = await fetch(`${MAIL_ENDPOINT}?reserved=1`, { headers: { Accept: "application/json" }, cache: "no-store" });
+        const data = await res.json();
+        if (!res.ok || !Array.isArray(data.dates)) return;
+        reserved.clear();
+        data.dates.forEach((d) => reserved.add(d));
+        if (selected.date && reserved.has(iso(selected.date))) clearDate();
+        paintMonth();
+      } catch (err) {
+        console.warn("Could not load reserved dates:", err.message);
+      }
+    };
 
     const value = (name) => (booking.elements[name] ? booking.elements[name].value.trim() : "");
     const setError = (step, message) => {
@@ -353,11 +373,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const total = new Date(year, month + 1, 0).getDate();
       for (let day = 1; day <= total; day++) {
         const d = new Date(year, month, day);
-        const open = isOpen(d);
+        const taken = isOpen(d) && reserved.has(iso(d));
+        const open = isOpen(d) && !taken;
         const isSel = selected.date && iso(selected.date) === iso(d);
-        html += `<button type="button" class="cal-day${open ? " is-open" : ""}${isSel ? " is-selected" : ""}" data-date="${iso(d)}"${open ? "" : " disabled"} aria-label="${d.toDateString()}${open ? "" : ", unavailable"}">${day}</button>`;
+        const cls = `cal-day${open ? " is-open" : ""}${taken ? " is-reserved" : ""}${isSel ? " is-selected" : ""}`;
+        const note = taken ? ", already reserved" : open ? "" : ", unavailable";
+        html += `<button type="button" class="${cls}" data-date="${iso(d)}"${taken ? ' title="Already reserved"' : ""}${open ? "" : " disabled"} aria-label="${d.toDateString()}${note}">${day}</button>`;
       }
       grid.innerHTML = html;
+    };
+
+    const clearDate = () => {
+      selected.date = null;
+      selected.hour = null;
+      slotsHead.textContent = "Select a date";
+      slotList.innerHTML = '<p class="slot-hint">Pick a highlighted day on the calendar to see open times.</p>';
     };
 
     const pickDate = (d) => {
@@ -421,7 +451,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const slot = e.target.closest(".slot");
 
       if (next && next.dataset.next === "2") {
-        if (validateDetails()) show(2);
+        if (validateDetails()) {
+          show(2);
+          loadReserved(); // refresh in case someone booked since the page loaded
+        }
       } else if (next && next.dataset.next === "3") {
         if (!selected.date || selected.hour === null) return setError(2, "Choose a date and a time to continue.");
         setError(2, "");
@@ -458,6 +491,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const payload = {
         form: "booking",
         date: slotsHead.textContent,
+        date_iso: iso(selected.date),
         time: `${hourLabel(selected.hour)} (${DURATION} minutes)`,
         full_name: value("full_name"),
         email: value("email"),
@@ -476,13 +510,25 @@ document.addEventListener("DOMContentLoaded", () => {
         await sendForm(payload);
       } catch (err) {
         console.error("Booking request failed:", err.message);
-        setError(3, "Sorry, your request could not be sent. Please try again or call 916-267-5665.");
+        if (err.status === 409) {
+          // Someone else booked this date first: mark it and send them back to pick another
+          reserved.add(iso(selected.date));
+          clearDate();
+          paintMonth();
+          show(2);
+          setError(2, "Sorry, that date has just been reserved by someone else. Please choose another date.");
+          return;
+        }
+        setError(3, err.status === 422 || err.status === 503
+          ? err.message
+          : "Sorry, your request could not be sent. Please try again or call 916-267-5665.");
         return;
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = "Send request";
       }
 
+      reserved.add(iso(selected.date));
       card.querySelector("[data-done-ref]").textContent = when;
       pills.forEach((pill) => {
         pill.classList.remove("is-active");
@@ -497,5 +543,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     paintMonth();
+    loadReserved();
   }
 });

@@ -3,3 +3,4 @@ api/config.php
 api/config.example.php
 # Vercel installs Composer packages itself from composer.json
 /vendor
+api/data/

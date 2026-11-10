@@ -1796,3 +1796,16 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* Honeypot field on the booking form: kept off-screen for people */
 .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* Booking calendar: dates someone has already reserved */
+.cal-day.is-reserved {
+  position: relative;
+  color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+.cal-legend { flex-wrap: wrap; gap: 16px; }
+.cal-legend__item { display: inline-flex; align-items: center; gap: 8px; }
+.cal-legend__dot--reserved { border-color: rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.06); }

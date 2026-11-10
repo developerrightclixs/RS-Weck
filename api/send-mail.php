@@ -130,7 +130,113 @@ if ($origin !== '') {
     header('Access-Control-Allow-Origin: ' . $origin);
     header('Vary: Origin');
 }
+/* ---------- Reserved lunch dates ----------
+ * One booking per date. Stored in Upstash Redis when its REST credentials are
+ * set (Vercel Marketplace > Upstash for Redis adds KV_REST_API_URL/TOKEN),
+ * otherwise in api/data/reservations.json for local development.
+ * To free a date again, delete its field from the "rsweck:reservations" hash
+ * in the Upstash console (or remove it from the local JSON file).
+ */
+const RESERVATIONS_KEY = 'rsweck:reservations';
+date_default_timezone_set('America/Los_Angeles');
+
+$redisUrl   = $env('KV_REST_API_URL') ?? $env('UPSTASH_REDIS_REST_URL');
+$redisToken = $env('KV_REST_API_TOKEN') ?? $env('UPSTASH_REDIS_REST_TOKEN');
+$onVercel   = $env('VERCEL') !== null;
+$localFile  = __DIR__ . '/data/reservations.json';
+
+$redis = static function (array $command) use ($redisUrl, $redisToken) {
+    $context = stream_context_create(['http' => [
+        'method'        => 'POST',
+        'header'        => "Authorization: Bearer {$redisToken}\r\nContent-Type: application/json\r\n",
+        'content'       => json_encode($command),
+        'timeout'       => 8,
+        'ignore_errors' => true,
+    ]]);
+    $body = @file_get_contents(rtrim((string) $redisUrl, '/'), false, $context);
+    $data = is_string($body) ? json_decode($body, true) : null;
+    if (!is_array($data) || array_key_exists('error', $data)) {
+        throw new RuntimeException('Reservation store error: ' . (is_array($data) ? ($data['error'] ?? '') : 'no response'));
+    }
+    return $data['result'] ?? null;
+};
+
+// Runs $fn with the decoded local JSON map under an exclusive lock; $fn may modify it
+$withLocalFile = static function (callable $fn) use ($localFile) {
+    if (!is_dir(dirname($localFile))) {
+        mkdir(dirname($localFile), 0775, true);
+    }
+    $handle = fopen($localFile, 'c+');
+    if (!$handle) {
+        throw new RuntimeException('Cannot open local reservations file.');
+    }
+    try {
+        flock($handle, LOCK_EX);
+        $map = json_decode(stream_get_contents($handle) ?: '{}', true) ?: [];
+        $result = $fn($map);
+        ftruncate($handle, 0);
+        rewind($handle);
+        fwrite($handle, json_encode($map, JSON_PRETTY_PRINT));
+        return $result;
+    } finally {
+        flock($handle, LOCK_UN);
+        fclose($handle);
+    }
+};
+
+$storeEnabled = ($redisUrl && $redisToken) || !$onVercel;
+
+/** Upcoming reserved dates as YYYY-MM-DD strings */
+$listReserved = static function () use ($redisUrl, $redisToken, $redis, $withLocalFile): array {
+    $dates = ($redisUrl && $redisToken)
+        ? (array) $redis(['HKEYS', RESERVATIONS_KEY])
+        : $withLocalFile(static fn (array &$map) => array_keys($map));
+    $today = date('Y-m-d');
+    $dates = array_values(array_filter($dates, static fn ($d) => is_string($d) && $d >= $today));
+    sort($dates);
+    return $dates;
+};
+
+/** Reserves $date; returns false if someone already holds it */
+$claimDate = static function (string $date, string $record) use ($redisUrl, $redisToken, $redis, $withLocalFile): bool {
+    if ($redisUrl && $redisToken) {
+        return (int) $redis(['HSETNX', RESERVATIONS_KEY, $date, $record]) === 1;
+    }
+    return $withLocalFile(static function (array &$map) use ($date, $record) {
+        if (isset($map[$date])) {
+            return false;
+        }
+        $map[$date] = json_decode($record, true);
+        return true;
+    });
+};
+
+$releaseDate = static function (string $date) use ($redisUrl, $redisToken, $redis, $withLocalFile): void {
+    if ($redisUrl && $redisToken) {
+        $redis(['HDEL', RESERVATIONS_KEY, $date]);
+        return;
+    }
+    $withLocalFile(static function (array &$map) use ($date) {
+        unset($map[$date]);
+    });
+};
+
 $method = $_SERVER['REQUEST_METHOD'] ?? '';
+
+// GET ?reserved : the calendar asks which dates are taken (dates only, no personal data)
+if ($method === 'GET' && isset($_GET['reserved'])) {
+    header('Cache-Control: no-store');
+    if (!$storeEnabled) {
+        respond(200, ['success' => true, 'enabled' => false, 'dates' => []]);
+    }
+    try {
+        respond(200, ['success' => true, 'enabled' => true, 'dates' => $listReserved()]);
+    } catch (Throwable $e) {
+        error_log($e->getMessage());
+        respond(503, ['success' => false, 'message' => 'Could not load reserved dates.']);
+    }
+}
+
 if ($method === 'OPTIONS') {
     header('Access-Control-Allow-Methods: POST');
     header('Access-Control-Allow-Headers: Content-Type');
@@ -178,6 +284,35 @@ if ($missing) {
 $replyEmail = $values[$form['email']];
 if (!filter_var($replyEmail, FILTER_VALIDATE_EMAIL)) {
     respond(422, ['success' => false, 'message' => 'Please enter a valid email address.']);
+}
+
+/* ---------- Reserve the lunch date (booking form only) ---------- */
+$reservedDate = null;
+if ($formKey === 'booking' && $storeEnabled) {
+    $dateIso = is_string($input['date_iso'] ?? null) ? $input['date_iso'] : '';
+    $day = DateTimeImmutable::createFromFormat('!Y-m-d', $dateIso);
+    $tomorrow = new DateTimeImmutable('tomorrow');
+    if (!$day || $day->format('Y-m-d') !== $dateIso
+        || !in_array((int) $day->format('w'), [2, 3, 4], true) // Tue-Thu
+        || $day < $tomorrow || $day > $tomorrow->modify('+62 days')) {
+        respond(422, ['success' => false, 'message' => 'Please choose an available date on the calendar.']);
+    }
+    $record = json_encode([
+        'name'      => $values['full_name'],
+        'email'     => $values['email'],
+        'phone'     => $values['phone'],
+        'company'   => $values['company'],
+        'booked_at' => date('c'),
+    ]);
+    try {
+        if (!$claimDate($dateIso, $record)) {
+            respond(409, ['success' => false, 'reserved' => true, 'message' => 'This date has already been reserved. Please choose another date.']);
+        }
+    } catch (Throwable $e) {
+        error_log($e->getMessage());
+        respond(503, ['success' => false, 'message' => 'Could not check the calendar right now. Please try again.']);
+    }
+    $reservedDate = $dateIso;
 }
 
 /* ---------- Build the email ---------- */
@@ -259,6 +394,14 @@ try {
     respond(200, ['success' => true]);
 } catch (MailException $e) {
     error_log('Website mailer error (' . $formKey . '): ' . $mail->ErrorInfo);
+    // The request never arrived, so give the date back
+    if ($reservedDate !== null) {
+        try {
+            $releaseDate($reservedDate);
+        } catch (Throwable $releaseError) {
+            error_log($releaseError->getMessage());
+        }
+    }
     $message = 'The request could not be sent right now.';
     if (!empty($config['debug'])) {
         $message .= ' ' . $mail->ErrorInfo;
