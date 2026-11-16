@@ -772,6 +772,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* ---------- About us (experience tabs) ---------- */
 .about-tabs { padding-top: clamp(80px, 13.7vw, 263px); }
 .page-about .about-tabs { padding: clamp(100px, 12.3vw, 448px) 0 80px; }
+.page-home .about-tabs { padding-bottom: clamp(64px, 6.25vw, 120px); }
 .page-home .services { margin-top: clamp(80px, 7.8vw, 150px); }
 
 .about-tabs__inner {
@@ -849,7 +850,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .about-intro__photo img { object-position: 85% center; }
 
 /* ---------- Contact form ---------- */
-.contact-section { padding-block: clamp(100px, 16.1vw, 310px); }
+
+.contact-section { padding-block: clamp(100px, 10.1vw, 310px); }
 .contact-layout {
   width: min(1204px, 100% - var(--gutter) * 2);
   display: flex;
@@ -1618,7 +1620,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .hero--page { min-height: 560px; }
 .hero--page .hero-content { padding-block: 100px; gap: 20px; }
 .hero--page h1 { font-size: clamp(36px, 3.75vw, 72px); line-height: 1.15; }
-.hero--page p { max-width: 860px; }
+.hero--page p {
+  max-width: 1000px;
+  font-size: clamp(18px, 1.35vw, 26px);
+  line-height: 1.5;
+}
 
 .breadcrumb {
   display: flex;
@@ -1723,17 +1729,22 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   margin: 0;
   font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
   font-weight: 400;
-  font-size: clamp(16px, 1.25vw, 24px);
+  font-size: clamp(18px, 1.45vw, 28px);
   line-height: 1.55;
   color: var(--light-text);
 }
+/* Topic list: real bullets, left-aligned inside a centered block */
 .hero-points {
-  list-style: none;
-  padding: 0;
+  list-style: disc;
+  max-width: 900px;
+  margin-inline: auto;
+  padding-left: 1.4em;
+  text-align: left;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+.hero-points li::marker { color: var(--gold); }
 .page-booking #booking { scroll-margin-top: 90px; }
 .page-booking .contact-section { padding-block: clamp(60px, 6vw, 120px); }
 
