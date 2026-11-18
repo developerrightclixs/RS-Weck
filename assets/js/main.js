@@ -406,7 +406,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const validateDetails = () => {
       const checks = [
-        ["full_name", "Enter your full name."],
+        ["full_name", "Enter the contact person's name."],
         ["email", "Enter a valid email address."],
         ["phone", "Enter a phone number we can reach you on."],
         ["service_type", "Choose a service type."],

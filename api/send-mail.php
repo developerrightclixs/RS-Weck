@@ -37,14 +37,14 @@ $forms = [
         'fields'  => [
             'date'             => ['Requested Date', 100, true],
             'time'             => ['Requested Time', 100, true],
-            'full_name'        => ['Full Name', 120, true],
+            'full_name'        => ['Contact Person', 120, true],
             'email'            => ['Email', 200, true],
             'phone'            => ['Phone', 50, true],
             'company'          => ['Firm or Company', 200, false],
             'meeting_type'     => ['Format', 100, false],
             'service_type'     => ['Service', 200, false],
             'property_address' => ['Property Address', 300, false],
-            'message'          => ['Notes', 5000, false],
+            'message'          => ['Comment', 5000, false],
         ],
     ],
     'quote' => [
