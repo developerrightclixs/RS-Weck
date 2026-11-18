@@ -409,7 +409,6 @@ document.addEventListener("DOMContentLoaded", () => {
         ["full_name", "Enter the contact person's name."],
         ["email", "Enter a valid email address."],
         ["phone", "Enter a phone number we can reach you on."],
-        ["service_type", "Choose a service type."],
       ];
       for (const [name, message] of checks) {
         const el = booking.elements[name];
@@ -429,14 +428,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const rows = [
         ["Date", slotsHead.textContent],
         ["Time", `${hourLabel(selected.hour)} (${DURATION} minutes)`],
-        ["Format", value("meeting_type")],
-        ["Service", value("service_type")],
-        ["Name", value("full_name")],
+        ["Contact Person", value("full_name")],
         ["Email", value("email")],
         ["Phone", value("phone")],
         ["Firm", value("company")],
-        ["Property", value("property_address")],
-        ["Notes", value("message")],
+        ["Comment", value("message")],
       ];
       card.querySelector("[data-review]").innerHTML = rows
         .filter((r) => r[1])
@@ -497,9 +493,6 @@ document.addEventListener("DOMContentLoaded", () => {
         email: value("email"),
         phone: value("phone"),
         company: value("company"),
-        meeting_type: value("meeting_type"),
-        service_type: value("service_type"),
-        property_address: value("property_address"),
         message: value("message"),
         website: value("website"), // honeypot, stays empty for real visitors
       };
